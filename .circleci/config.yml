@@ -173,8 +173,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   configure-infrastructure:
       <<: *ansible_image
@@ -205,8 +205,8 @@ jobs:
               cat backend/.env
               cd .circleci/ansible
               ansible-playbook -i inventory.txt configure-server.yml
-        - destroy-environment
-        - revert-migrations
+        # - destroy-environment
+        # - revert-migrations
 
   run-migrations:
       <<: *node_image
@@ -235,8 +235,8 @@ jobs:
                     # If you are using kvdb.io, generate the bucket ID "${KVDB_BUCKET}" in your local terminal first
                     curl --insecure https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d 'success'
                 fi
-        - destroy-environment
-        - revert-migrations
+        # - destroy-environment
+        # - revert-migrations
 
   deploy-frontend:
     <<: *ansible_image
@@ -269,8 +269,8 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
                     
   deploy-backend:
     <<: *ansible_image
@@ -298,8 +298,8 @@ jobs:
             mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   smoke-test:
     <<: *ansible_image
@@ -325,8 +325,8 @@ jobs:
             export URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-${AWS_DEFAULT_REGION}.amazonaws.com/#/employees"            
             echo $URL
             if curl ${URL} | grep "Welcome"; then return 0; else return 1; fi
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   cloudfront-update:
     <<: *aws_image
@@ -347,8 +347,8 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
             --tags project=udapeople
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   cleanup:
     <<: *aws_image
